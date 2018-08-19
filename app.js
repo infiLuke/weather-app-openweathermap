@@ -1,5 +1,6 @@
 const weather = require('./weatherLogic');
-const query = process.argv[2];
-// city name
+const cityNames = process.argv.slice(2);
 
-weather.get(query);
+for (city of cityNames) {
+  weather.get(city);
+}
