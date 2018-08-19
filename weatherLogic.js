@@ -1,10 +1,8 @@
 const https = require('https');
 const api = require('./api.json');
 
-// format &amp; print important info from weatherData.json
-function printWeatherInfo(weather) {
-  console.log(weather);
-  var a = new Date(weather.dt * 1000);
+function convertDate(timestamp) {
+  var a = new Date(timestamp * 1000);
   var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   var year = a.getFullYear();
   var month = months[a.getMonth()];
@@ -12,16 +10,29 @@ function printWeatherInfo(weather) {
   var hour = a.getHours();
   var min = a.getMinutes();
   var time = hour + ':' + min + ` (${date} ${month} ${year})`
-  const message = `Current Time: ${time}\n` +
-      `The temperature in ${weather.name} is ${weather.main.temp} Celsius with ${weather.weather.description}.\n` +
-      `${weather.clouds.all}% cloud coverage and ${weather.main.humidity}% humidity.\n` +
-      `A low of ${weather.main.temp_min} and a high of ${weather.main.temp_max} Celsius.\n`
+  return time;
+}
+
+// format &amp; print important info from weatherData.json
+function printWeatherInfo(weather) {
+  // log out whole json file
+  // console.log(weather);
+  // format and select relevant info
+  const weatherInfoTime = convertDate(weather.dt);
+  const sunriseTime = convertDate(weather.sys.sunrise);
+  const sunsetTime = convertDate(weather.sys.sunset);
+  const message = `The temperature in ${weather.name}, ${weather.sys.country} is ${weather.main.temp} degrees celsius with ${weather.weather[0].description}.\n` +
+      `  - ${weather.clouds.all}% cloud coverage and ${weather.main.humidity}% humidity\n` +
+      `  - a current low of ${weather.main.temp_min} and a high of ${weather.main.temp_max} celsius\n` +
+      `  - sunrise: ${sunriseTime}\n` +
+      `  - sunset:  ${sunsetTime}\n` +
+      `  - the weather info was collected at ${weatherInfoTime}`
   console.log(message);
 }
 
-function getWeatherData() {
+function getWeatherData(city) {
   // connect
-  const request = https.get(`https://api.openweathermap.org/data/2.5/weather?q=London,uk&units=metric&APPID=${api.key}`, response => {
+  const request = https.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&APPID=${api.key}`, response => {
     let body = '';
     // read
     response.on('data', data => {
