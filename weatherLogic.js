@@ -1,4 +1,5 @@
 const https = require('https');
+const colors = require('colors');
 const api = require('./api.json');
 
 function convertDate(timestamp) {
@@ -26,7 +27,7 @@ function printWeatherInfo(weather) {
       `  - a current low of ${weather.main.temp_min} and a high of ${weather.main.temp_max} celsius\n` +
       `  - sunrise: ${sunriseTime}\n` +
       `  - sunset:  ${sunsetTime}\n` +
-      `  - the weather info was collected at ${weatherInfoTime}\n` +
+      `  - the weather data was collected at ${weatherInfoTime}\n` +
       `  -----------------------------------------------------------`
   console.log(message);
 }

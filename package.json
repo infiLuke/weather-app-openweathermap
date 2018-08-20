@@ -1,0 +1,28 @@
+{
+  "name": "weather-app",
+  "version": "0.1.1",
+  "description": "command line interface weather app for the openweathermap.org api",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infiLuke/weather-app-openweathermap.git"
+  },
+  "keywords": [
+    "weather",
+    "app",
+    "api",
+    "openweathermap.org"
+  ],
+  "author": "infi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/infiLuke/weather-app-openweathermap/issues"
+  },
+  "homepage": "https://github.com/infiLuke/weather-app-openweathermap#readme",
+  "dependencies": {
+    "colors": "^1.3.1"
+  }
+}
