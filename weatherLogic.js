@@ -27,9 +27,9 @@ function printWeatherInfo(weather) {
       `  - a current low of ${weather.main.temp_min} and a high of ${weather.main.temp_max} celsius\n` +
       `  - sunrise: ${sunriseTime}\n` +
       `  - sunset:  ${sunsetTime}\n` +
-      `  - the weather data was collected at ${weatherInfoTime}\n` +
-      `  -----------------------------------------------------------`
-  console.log(message);
+      `  - the weather data was collected at ${weatherInfoTime}\n`
+  console.log(message.green);
+  console.log(`  -----------------------------------------------------------`.cyan);
 }
 
 function getWeatherData(city) {
