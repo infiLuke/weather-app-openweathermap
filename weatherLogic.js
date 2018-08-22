@@ -1,4 +1,5 @@
 const https = require('https');
+const http = require('http');
 const colors = require('colors');
 const api = require('./api.json');
 
@@ -14,7 +15,12 @@ function convertDate(timestamp) {
   return time;
 }
 
-// format &amp; print important info from weatherData.json
+// print error messages
+function printError(error) {
+  console.error(error.message);
+}
+
+// format &amp; print important info from weather.json
 function printWeatherInfo(weather) {
   // log out whole json file
   // console.log(weather);
@@ -27,25 +33,41 @@ function printWeatherInfo(weather) {
       `  - a current low of ${weather.main.temp_min} and a high of ${weather.main.temp_max} celsius\n` +
       `  - sunrise: ${sunriseTime}\n` +
       `  - sunset:  ${sunsetTime}\n` +
-      `  - the weather data was collected at ${weatherInfoTime}\n`
+      `  - weather data was collected at ${weatherInfoTime}\n`
   console.log(message.green);
   console.log(`  -----------------------------------------------------------`.cyan);
 }
 
 function getWeatherData(city) {
-  // connect
-  const request = https.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&APPID=${api.key}`, response => {
-    let body = '';
-    // read
-    response.on('data', data => {
-      body += data;
+  // try for incorrect URL
+  try {
+    // connect
+    const request = https.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&APPID=${api.key}`, response => {
+      // check for http status code
+      if (response.statusCode === 200) {
+        let body = '';
+        // read
+        response.on('data', data => {
+          body += data;
+        });
+        // parse
+        response.on('end', () => {
+          const weatherData = JSON.parse(body);
+          printWeatherInfo(weatherData);
+        });
+      } else {
+        // handle erroneous api http status codes
+        const message = `HTTP Status Error Code (${response.statusCode} - ${http.STATUS_CODES[response.statusCode]}) - occured while trying to retrieve data for ${city}`;
+        const statusCodeError = new Error(message);
+        printError(statusCodeError);
+      }
     });
-    // parse
-    response.on('end', () => {
-      const weatherData = JSON.parse(body);
-      printWeatherInfo(weatherData);
-    });
-  });
+    // handle error event for unresponsive url
+    request.on('error', error => printError(error));
+  } catch(error) {
+    // handle faulty url exception
+    printError(error);
+  }
 }
 
 
