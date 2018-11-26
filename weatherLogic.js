@@ -4,14 +4,16 @@ const colors = require('colors');
 const api = require('./api.json');
 
 function convertDate(timestamp) {
-  var a = new Date(timestamp * 1000);
-  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var year = a.getFullYear();
-  var month = months[a.getMonth()];
-  var date = a.getDate();
-  var hour = a.getHours();
-  var min = a.getMinutes();
-  var time = hour + ':' + min + ` (${date} ${month} ${year})`
+  let months = [
+    'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
+  ];
+  let a = new Date(timestamp * 1000);
+  let year = a.getFullYear();
+  let month = months[a.getMonth()];
+  let date = a.getDate();
+  let hour = a.getHours();
+  let min = a.getMinutes();
+  let time = hour + ':' + min + ` (${date} ${month} ${year})`
   return time;
 }
 
@@ -25,10 +27,10 @@ function printWeatherInfo(weather) {
   // log out whole json file
   // console.log(weather);
   // format and select relevant info
-  const weatherInfoTime = convertDate(weather.dt);
-  const sunriseTime = convertDate(weather.sys.sunrise);
-  const sunsetTime = convertDate(weather.sys.sunset);
-  const message = `The temperature in ${weather.name}, ${weather.sys.country} is ${weather.main.temp} degrees celsius with ${weather.weather[0].description}.\n` +
+  let weatherInfoTime = convertDate(weather.dt);
+  let sunriseTime = convertDate(weather.sys.sunrise);
+  let sunsetTime = convertDate(weather.sys.sunset);
+  let message = `The temperature in ${weather.name}, ${weather.sys.country} is ${weather.main.temp} degrees celsius with ${weather.weather[0].description}.\n` +
       `  - ${weather.clouds.all}% cloud coverage and ${weather.main.humidity}% humidity\n` +
       `  - a current low of ${weather.main.temp_min} and a high of ${weather.main.temp_max} celsius\n` +
       `  - sunrise: ${sunriseTime}\n` +
@@ -42,7 +44,7 @@ function getWeatherData(city) {
   // try for incorrect URL
   try {
     // connect
-    const request = https.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&APPID=${api.key}`, response => {
+    let request = https.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&APPID=${api.key}`, response => {
       // check for http status code
       if (response.statusCode === 200) {
         let body = '';
@@ -52,13 +54,13 @@ function getWeatherData(city) {
         });
         // parse
         response.on('end', () => {
-          const weatherData = JSON.parse(body);
+          let weatherData = JSON.parse(body);
           printWeatherInfo(weatherData);
         });
       } else {
         // handle erroneous api http status codes
-        const message = `HTTP Status Error Code (${response.statusCode} - ${http.STATUS_CODES[response.statusCode]}) - occured while trying to retrieve data for ${city}`;
-        const statusCodeError = new Error(message);
+        let message = `HTTP Status Error Code (${response.statusCode} - ${http.STATUS_CODES[response.statusCode]}) - occured while trying to retrieve data for ${city}`;
+        let statusCodeError = new Error(message);
         printError(statusCodeError);
       }
     });
