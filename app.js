@@ -7,7 +7,7 @@
 const weather = require('./weatherLogic');
 const cityNames = process.argv.slice(2);
 
-if (cityNames[0].match(/-[1-9]$|-1[0-6]$/)) {
+if (cityNames[0].match(/^-[1-9]$|-1[0-6]$/)) {
   const numberOfDays = cityNames[0].substring(1);
   for (city of cityNames.slice(1)) {
     weather.getMultiDay(city, numberOfDays);
