@@ -1,7 +1,26 @@
+/*
+ * weather-api-client - logic
+ * Copyright (c) Luca J
+ * MIT License
+ */
+
+// 'use strict';
+
+/**
+ * Module Dependencies.
+ * @private
+ */
+
 const https = require('https');
 const http = require('http');
 const colors = require('colors');
 const api = require('./api.json');
+
+/**
+ * Format a timestamp into human-readable format.
+ * @param {int} timestamp
+ * @private
+ */
 
 function formatTimestamp(timestamp) {
   const months = [
@@ -18,14 +37,20 @@ function formatTimestamp(timestamp) {
   return formattedDateTime;
 }
 
-// print error messages
+/**
+ * Log error messages to stderr.
+ * @param {Error} error object
+ * @private
+ */
+
 function printError(error) {
   console.error(error.message);
 }
 
-// format &amp; print important info from weather.json
-function printWeatherInfo(weather) {
-  // format and select relevant info
+/**
+ *
+ */
+const printCurrentWeather = weather => {
   const weatherInfoTime = formatTimestamp(weather.dt);
   const sunriseTime = formatTimestamp(weather.sys.sunrise);
   const sunsetTime = formatTimestamp(weather.sys.sunset);
@@ -40,23 +65,42 @@ function printWeatherInfo(weather) {
   console.log(`  -----------------------------------------------------------`.cyan);
 }
 
-function getWeatherData(city) {
-  // try for incorrect URL
-  try {
-    // connect
-    const request = https.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&APPID=${api.key}`, response => {
+/**
+ *
+ */
+const printTodaysForecast = weather => {
+  console.log('printing todays forecast ');
+}
 
-      // check for http status code
+/**
+ *
+ */
+const printFiveDayForecast = weather => {
+  console.log('printing five day forecast');
+}
+
+/**
+ *
+ */
+const printMultiDayForecast = weather => {
+  console.log('printing multiday forecast');
+}
+
+/**
+ *
+ */
+function getWeatherData(uri, printMode) {
+  // try for incorrect uri
+  try {
+    const request = https.get(uri + api.key, response => {
+
       if (response.statusCode === 200) {
         let body = '';
-        // read
         response.on('data', data => {
           body += data;
         });
-        // parse
         response.on('end', () => {
-          const weatherData = JSON.parse(body);
-          printWeatherInfo(weatherData);
+          printMode(JSON.parse(body));
         });
       } else {
         // handle erroneous api http status codes
@@ -66,13 +110,54 @@ function getWeatherData(city) {
       }
 
     });
-    // handle error event for unresponsive url
+    // handle error event for unresponsive uri
     request.on('error', error => printError(error));
+
+  // handle faulty uri exception
   } catch(error) {
-    // handle faulty url exception
     printError(error);
   }
 }
 
+/**
+ *
+ */
+function queryCurrentWeather(city) {
+  getWeatherData(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&APPID=`,
+      printCurrentWeather);
+}
 
-module.exports.get = getWeatherData;
+/**
+ *
+ */
+function queryTodaysForecast(city) {
+  getWeatherData(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&APPID=`,
+      printTodaysForecast);
+}
+
+/**
+ *
+ */
+function queryFiveDayForecast(city) {
+  getWeatherData(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&APPID=`,
+      printFiveDayForecast);
+}
+
+/*
+ * (2019-01-20) Resource now only available for paid accounts.
+ */
+function queryMultiDayForecast(city, days) {
+  getWeatherData(`https://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&units=metric&cnt=${days}&APPID=`,
+      printMultiDayForecast);
+  console.log(`I received ${city} for ${days} days.`);
+}
+
+/**
+ * Module exports.
+ * @public
+ */
+
+module.exports.getNow = queryCurrentWeather;
+module.exports.getToday = queryTodaysForecast;
+module.exports.getFiveDays = queryFiveDayForecast;
+module.exports.getMultiDay = queryMultiDayForecast;
