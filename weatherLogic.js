@@ -1,61 +1,118 @@
+/*
+ * weather-api-client - logic
+ * Copyright (c) 2018 Luca J
+ * Licensed under the MIT license.
+ */
+
+'use strict';
+
+/**
+ * Module dependencies.
+ * @private
+ */
+
 const https = require('https');
 const http = require('http');
 const colors = require('colors');
 const api = require('./api.json');
 
-function convertDate(timestamp) {
+/**
+ * Module exports.
+ * @public
+ */
+
+module.exports.getNow = queryCurrentWeather;
+module.exports.getToday = queryTodaysForecast;
+module.exports.getFiveDays = queryFiveDayForecast;
+module.exports.getMultiDay = queryMultiDayForecast;
+
+/**
+ * Format a timestamp into human-readable format.
+ *
+ * @param {int} timestamp
+ * @private
+ */
+
+function formatTimestamp(timestamp) {
   const months = [
     'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
   ];
-  const a = new Date(timestamp * 1000);
-  const year = a.getFullYear();
-  const month = months[a.getMonth()];
-  const date = a.getDate();
-  const hour = a.getHours();
-  const min = a.getMinutes();
-  const time = hour + ':' + min + ` (${date} ${month} ${year})`
-  return time;
+  const dateTime = new Date(timestamp * 1000);
+  const year = dateTime.getFullYear();
+  const month = months[dateTime.getMonth()];
+  const date = dateTime.getDate();
+  const hour = dateTime.getHours();
+  const min = dateTime.getMinutes();
+  const formattedDateTime = hour + ':' + min + ` (${date} ${month} ${year})`
+
+  return formattedDateTime;
 }
 
-// print error messages
+/**
+ * Log error messages to stderr.
+ *
+ * @param {Error} error object
+ * @private
+ */
+
 function printError(error) {
   console.error(error.message);
 }
 
-// format &amp; print important info from weather.json
-function printWeatherInfo(weather) {
-  // log out whole json file
-  // console.log(weather);
-  // format and select relevant info
-  const weatherInfoTime = convertDate(weather.dt);
-  const sunriseTime = convertDate(weather.sys.sunrise);
-  const sunsetTime = convertDate(weather.sys.sunset);
-  const message = `The temperature in ${weather.name}, ${weather.sys.country} is ${weather.main.temp} degrees celsius with ${weather.weather[0].description}.\n` +
-      `  - ${weather.clouds.all}% cloud coverage and ${weather.main.humidity}% humidity\n` +
-      `  - a current low of ${weather.main.temp_min} and a high of ${weather.main.temp_max} celsius\n` +
-      `  - sunrise: ${sunriseTime}\n` +
-      `  - sunset:  ${sunsetTime}\n` +
-      `  - weather data was collected at ${weatherInfoTime}\n`
+/**
+ *
+ */
+const printCurrentWeather = weather => {
+  const weatherInfoTime = formatTimestamp(weather.dt);
+  const sunriseTime = formatTimestamp(weather.sys.sunrise);
+  const sunsetTime = formatTimestamp(weather.sys.sunset);
+  const message = `The temperature in ${weather.name}, ${weather.sys.country} is ${weather.main.temp} degrees celsius with ${weather.weather[0].description}.
+  - ${weather.clouds.all}% cloud coverage and ${weather.main.humidity}% humidity
+  - a current low of ${weather.main.temp_min} and a high of ${weather.main.temp_max} celsius
+  - sunrise: ${sunriseTime}
+  - sunset:  ${sunsetTime}
+  - weather data was collected at ${weatherInfoTime}`
+
   console.log(message.green);
   console.log(`  -----------------------------------------------------------`.cyan);
 }
 
-function getWeatherData(city) {
-  // try for incorrect URL
+/**
+ *
+ */
+const printTodaysForecast = weather => {
+  console.log('printing todays forecast ');
+}
+
+/**
+ *
+ */
+const printFiveDayForecast = weather => {
+  console.log('printing five day forecast');
+}
+
+/**
+ *
+ */
+const printMultiDayForecast = weather => {
+  console.log('printing multiday forecast');
+}
+
+/**
+ *
+ */
+function getWeatherData(uri, printMode) {
+  // try for incorrect uri
   try {
-    // connect
-    const request = https.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&APPID=${api.key}`, response => {
-      // check for http status code
+    const request = https.get(uri + api.key, response => {
+
       if (response.statusCode === 200) {
         let body = '';
-        // read
         response.on('data', data => {
           body += data;
         });
-        // parse
         response.on('end', () => {
-          const weatherData = JSON.parse(body);
-          printWeatherInfo(weatherData);
+          printMode(JSON.parse(body));
         });
       } else {
         // handle erroneous api http status codes
@@ -64,13 +121,50 @@ function getWeatherData(city) {
         printError(statusCodeError);
       }
     });
-    // handle error event for unresponsive url
+    // handle error event for unresponsive uri
     request.on('error', error => printError(error));
+
+  // handle faulty uri exception
   } catch(error) {
-    // handle faulty url exception
     printError(error);
   }
 }
 
+/**
+ *
+ */
+function queryCurrentWeather(city) {
+  getWeatherData(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&APPID=`,
+      printCurrentWeather);
+}
 
-module.exports.get = getWeatherData;
+/**
+ *
+ */
+function queryTodaysForecast(city) {
+  getWeatherData(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&APPID=`,
+      printTodaysForecast);
+}
+
+/**
+ *
+ */
+function queryFiveDayForecast(city) {
+  getWeatherData(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&APPID=`,
+      printFiveDayForecast);
+}
+
+/**
+ * Query the api and print forecast for a single city and a specific number of
+ * days. (2019-01-20) API Resource now only available for paid accounts.
+ *
+ * @params {string} cityname
+ * @params {number} number of days to forcast
+ */
+
+function queryMultiDayForecast(city, days) {
+  getWeatherData(`https://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&units=metric&cnt=${days}&APPID=`,
+      printMultiDayForecast);
+  console.log(`I received ${city} for ${days} days.`);
+}
+
