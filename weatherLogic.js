@@ -1,13 +1,13 @@
 /*
  * weather-api-client - logic
- * Copyright (c) Luca J
- * MIT License
+ * Copyright (c) 2018 Luca J
+ * Licensed under the MIT license.
  */
 
-// 'use strict';
+'use strict';
 
 /**
- * Module Dependencies.
+ * Module dependencies.
  * @private
  */
 
@@ -17,7 +17,18 @@ const colors = require('colors');
 const api = require('./api.json');
 
 /**
+ * Module exports.
+ * @public
+ */
+
+module.exports.getNow = queryCurrentWeather;
+module.exports.getToday = queryTodaysForecast;
+module.exports.getFiveDays = queryFiveDayForecast;
+module.exports.getMultiDay = queryMultiDayForecast;
+
+/**
  * Format a timestamp into human-readable format.
+ *
  * @param {int} timestamp
  * @private
  */
@@ -39,6 +50,7 @@ function formatTimestamp(timestamp) {
 
 /**
  * Log error messages to stderr.
+ *
  * @param {Error} error object
  * @private
  */
@@ -108,7 +120,6 @@ function getWeatherData(uri, printMode) {
         const statusCodeError = new Error(message);
         printError(statusCodeError);
       }
-
     });
     // handle error event for unresponsive uri
     request.on('error', error => printError(error));
@@ -143,21 +154,17 @@ function queryFiveDayForecast(city) {
       printFiveDayForecast);
 }
 
-/*
- * (2019-01-20) Resource now only available for paid accounts.
+/**
+ * Query the api and print forecast for a single city and a specific number of
+ * days. (2019-01-20) API Resource now only available for paid accounts.
+ *
+ * @params {string} cityname
+ * @params {number} number of days to forcast
  */
+
 function queryMultiDayForecast(city, days) {
   getWeatherData(`https://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&units=metric&cnt=${days}&APPID=`,
       printMultiDayForecast);
   console.log(`I received ${city} for ${days} days.`);
 }
 
-/**
- * Module exports.
- * @public
- */
-
-module.exports.getNow = queryCurrentWeather;
-module.exports.getToday = queryTodaysForecast;
-module.exports.getFiveDays = queryFiveDayForecast;
-module.exports.getMultiDay = queryMultiDayForecast;
