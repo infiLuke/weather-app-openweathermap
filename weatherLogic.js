@@ -17,6 +17,13 @@ const colors = require('colors');
 const api = require('./api.json');
 
 /**
+ * Module variables.
+ * @private
+ */
+
+const apiUrl = 'https://api.openweathermap.org/data/2.5/';
+
+/**
  * Module exports.
  * @public
  */
@@ -27,7 +34,18 @@ module.exports.getFiveDays = queryFiveDayForecast;
 module.exports.getMultiDay = queryMultiDayForecast;
 
 /**
- * Format a timestamp into human-readable format.
+ * Log error messages to stderr.
+ *
+ * @param {Error} error object
+ * @private
+ */
+
+function printError(error) {
+  console.error(error.message);
+}
+
+/**
+ * Format a unix timestamp into human-readable format.
  *
  * @param {int} timestamp
  * @private
@@ -49,19 +67,9 @@ function formatTimestamp(timestamp) {
 }
 
 /**
- * Log error messages to stderr.
- *
- * @param {Error} error object
- * @private
- */
-
-function printError(error) {
-  console.error(error.message);
-}
-
-/**
  *
  */
+
 const printCurrentWeather = weather => {
   const weatherInfoTime = formatTimestamp(weather.dt);
   const sunriseTime = formatTimestamp(weather.sys.sunrise);
@@ -80,6 +88,7 @@ const printCurrentWeather = weather => {
 /**
  *
  */
+
 const printTodaysForecast = weather => {
   console.log('printing todays forecast ');
 }
@@ -87,6 +96,7 @@ const printTodaysForecast = weather => {
 /**
  *
  */
+
 const printFiveDayForecast = weather => {
   console.log('printing five day forecast');
 }
@@ -94,6 +104,7 @@ const printFiveDayForecast = weather => {
 /**
  *
  */
+
 const printMultiDayForecast = weather => {
   console.log('printing multiday forecast');
 }
@@ -101,6 +112,7 @@ const printMultiDayForecast = weather => {
 /**
  *
  */
+
 function getWeatherData(uri, printMode) {
   // try for incorrect uri
   try {
@@ -133,24 +145,27 @@ function getWeatherData(uri, printMode) {
 /**
  *
  */
+
 function queryCurrentWeather(city) {
-  getWeatherData(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&APPID=`,
+  getWeatherData(`${apiUrl}weather?q=${city}&units=metric&APPID=`,
       printCurrentWeather);
 }
 
 /**
  *
  */
+
 function queryTodaysForecast(city) {
-  getWeatherData(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&APPID=`,
+  getWeatherData(`${apiUrl}forecast?q=${city}&units=metric&APPID=`,
       printTodaysForecast);
 }
 
 /**
  *
  */
+
 function queryFiveDayForecast(city) {
-  getWeatherData(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&APPID=`,
+  getWeatherData(`${apiUrl}forecast?q=${city}&units=metric&APPID=`,
       printFiveDayForecast);
 }
 
@@ -163,7 +178,7 @@ function queryFiveDayForecast(city) {
  */
 
 function queryMultiDayForecast(city, days) {
-  getWeatherData(`https://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&units=metric&cnt=${days}&APPID=`,
+  getWeatherData(`${apiUrl}forecast/daily?q=${city}&units=metric&cnt=${days}&APPID=`,
       printMultiDayForecast);
   console.log(`I received ${city} for ${days} days.`);
 }
