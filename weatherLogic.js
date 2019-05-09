@@ -119,7 +119,11 @@ function printMultiDayForecast(weather) {
 }
 
 /**
+ * Query an api with a GET request to a given uri  secret, format and print the
+ * returned json object.
  *
+ * @params {string} uri string for the api
+ * @params {Function} printMode to be used on the query result
  */
 
 function getWeatherData(uri, printMode) {
@@ -152,7 +156,9 @@ function getWeatherData(uri, printMode) {
 }
 
 /**
+ * Query the api and print the current weather for a given city.
  *
+ * @params {string} cityname
  */
 
 function queryCurrentWeather(city) {
@@ -161,7 +167,9 @@ function queryCurrentWeather(city) {
 }
 
 /**
+ * Query the api and print todays weather forecast for a given city.
  *
+ * @params {string} cityname
  */
 
 function queryTodaysForecast(city) {
@@ -170,7 +178,9 @@ function queryTodaysForecast(city) {
 }
 
 /**
+ * Query the api and print a five day forecast for a given city.
  *
+ * @params {string} cityname
  */
 
 function queryFiveDayForecast(city) {
