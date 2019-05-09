@@ -108,7 +108,8 @@ function printFiveDayForecast(weather) {
 }
 
 /**
- * Format and print the current weather from a json object.
+ * Format and print a weather forecast for a variable amount of days from a
+ * json object.
  *
  * @params {Object} weather - json object holding weather data
  */
