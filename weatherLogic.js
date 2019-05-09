@@ -67,10 +67,12 @@ function formatTimestamp(timestamp) {
 }
 
 /**
+ * Format and print the current weather from a json object.
  *
+ * @params {Object} weather - json object holding weather data
  */
 
-const printCurrentWeather = weather => {
+function printCurrentWeather(weather) {
   const weatherInfoTime = formatTimestamp(weather.dt);
   const sunriseTime = formatTimestamp(weather.sys.sunrise);
   const sunsetTime = formatTimestamp(weather.sys.sunset);
@@ -86,27 +88,33 @@ const printCurrentWeather = weather => {
 }
 
 /**
+ * Format and print a forecast for todays weather from a json object.
  *
+ * @params {Object} weather - json object holding weather data
  */
 
-const printTodaysForecast = weather => {
-  console.log('printing todays forecast ');
+function printTodaysForecast(weather) {
+  console.log(weather);
 }
 
 /**
+ * Format and print a five day weather forecast from a json object.
  *
+ * @params {Object} weather - json object holding weather data
  */
 
-const printFiveDayForecast = weather => {
-  console.log('printing five day forecast');
+function printFiveDayForecast(weather) {
+  console.log(weather);
 }
 
 /**
+ * Format and print the current weather from a json object.
  *
+ * @params {Object} weather - json object holding weather data
  */
 
-const printMultiDayForecast = weather => {
-  console.log('printing multiday forecast');
+function printMultiDayForecast(weather) {
+  console.log(weather);
 }
 
 /**
@@ -126,9 +134,11 @@ function getWeatherData(uri, printMode) {
         response.on('end', () => {
           printMode(JSON.parse(body));
         });
+      } else if (response.statusCode === 401) {
+        console.log(`HTTP Status Code (${response.statusCode} - ${http.STATUS_CODES[response.statusCode]}) - occured. Your API key might be invalid or the service you are trying to access might be a premium feature.`);
       } else {
         // handle erroneous api http status codes
-        const message = `HTTP Status Error Code (${response.statusCode} - ${http.STATUS_CODES[response.statusCode]}) - occured while trying to retrieve data for ${city}`;
+        const message = `HTTP Status Code (${response.statusCode} - ${http.STATUS_CODES[response.statusCode]}) - occured while trying to retrieve data`;
         const statusCodeError = new Error(message);
         printError(statusCodeError);
       }
@@ -180,6 +190,5 @@ function queryFiveDayForecast(city) {
 function queryMultiDayForecast(city, days) {
   getWeatherData(`${apiUrl}forecast/daily?q=${city}&units=metric&cnt=${days}&APPID=`,
       printMultiDayForecast);
-  console.log(`I received ${city} for ${days} days.`);
 }
 
