@@ -136,12 +136,10 @@ function getWeatherData(uri, printMode) {
           printMode(JSON.parse(body));
         });
       } else if (response.statusCode === 401) {
-        console.log(`HTTP Status Code (${response.statusCode} - ${http.STATUS_CODES[response.statusCode]}) - occured. Your API key might be invalid or the service you are trying to access might be a premium feature.`);
+        console.log(`HTTP Status Code (${response.statusCode} - ${http.STATUS_CODES[response.statusCode]}) - returned. Your API key might be invalid or the service you are trying to access might be a premium feature.`);
       } else {
         // handle erroneous api http status codes
-        const message = `HTTP Status Code (${response.statusCode} - ${http.STATUS_CODES[response.statusCode]}) - occured while trying to retrieve data`;
-        const statusCodeError = new Error(message);
-        printError(statusCodeError);
+        printError(new Error(`HTTP Status Code (${response.statusCode} - ${http.STATUS_CODES[response.statusCode]}) - returned.`));
       }
     });
     // handle error event for unresponsive uri
