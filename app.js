@@ -7,18 +7,23 @@
 'use strict';
 
 /**
- * Module dependencies.
+ * Application dependencies.
  * @private
  */
 
-const {getMultiDay, getToday, getFiveDays, getNow} = require('./weatherLogic');
+const {getMultiDay, getToday, getFiveDays, getNow} = require('./weather-logic');
 
 /**
- * Module variables.
+ * Application variables.
  * @private
  */
 
 const cityNames = process.argv.slice(2);
+
+/**
+ * Application Startup.
+ * @private
+ */
 
 if (cityNames[0].match(/(^-[1-9]$)|(-1[0-6]$)/)) {
   const numberOfDays = cityNames[0].substring(1);
@@ -41,3 +46,4 @@ if (cityNames[0].match(/(^-[1-9]$)|(-1[0-6]$)/)) {
     getNow(city);
   }
 }
+

@@ -70,6 +70,7 @@ function formatTimestamp(timestamp) {
  * Format and print the current weather from a json object.
  *
  * @params {Object} weather - json object holding weather data
+ * @private
  */
 
 function printCurrentWeather(weather) {
@@ -91,6 +92,7 @@ function printCurrentWeather(weather) {
  * Format and print a forecast for todays weather from a json object.
  *
  * @params {Object} weather - json object holding weather data
+ * @private
  */
 
 function printTodaysForecast(weather) {
@@ -101,6 +103,7 @@ function printTodaysForecast(weather) {
  * Format and print a five day weather forecast from a json object.
  *
  * @params {Object} weather - json object holding weather data
+ * @private
  */
 
 function printFiveDayForecast(weather) {
@@ -112,6 +115,7 @@ function printFiveDayForecast(weather) {
  * json object.
  *
  * @params {Object} weather - json object holding weather data
+ * @private
  */
 
 function printMultiDayForecast(weather) {
@@ -124,6 +128,7 @@ function printMultiDayForecast(weather) {
  *
  * @params {string} uri string for the api
  * @params {Function} printMode to be used on the query result
+ * @private
  */
 
 function getWeatherData(uri, printMode) {
