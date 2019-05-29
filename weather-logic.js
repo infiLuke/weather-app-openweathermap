@@ -69,7 +69,7 @@ function formatTimestamp(timestamp) {
 /**
  * Format and print the current weather from a json object.
  *
- * @params {Object} weather - json object holding weather data
+ * @param {Object} weather - json object holding weather data
  * @private
  */
 
@@ -91,7 +91,7 @@ function printCurrentWeather(weather) {
 /**
  * Format and print a forecast for todays weather from a json object.
  *
- * @params {Object} weather - json object holding weather data
+ * @param {Object} weather - json object holding weather data
  * @private
  */
 
@@ -102,7 +102,7 @@ function printTodaysForecast(weather) {
 /**
  * Format and print a five day weather forecast from a json object.
  *
- * @params {Object} weather - json object holding weather data
+ * @param {Object} weather - json object holding weather data
  * @private
  */
 
@@ -114,7 +114,7 @@ function printFiveDayForecast(weather) {
  * Format and print a weather forecast for a variable amount of days from a
  * json object.
  *
- * @params {Object} weather - json object holding weather data
+ * @param {Object} weather - json object holding weather data
  * @private
  */
 
@@ -126,8 +126,8 @@ function printMultiDayForecast(weather) {
  * Query an api with a GET request to a given uri  secret, format and print the
  * returned json object.
  *
- * @params {string} uri string for the api
- * @params {Function} printMode to be used on the query result
+ * @param {string} uri string for the api
+ * @param {Function} printMode to be used on the query result
  * @private
  */
 
@@ -163,7 +163,7 @@ function getWeatherData(uri, printMode) {
 /**
  * Query the api and print the current weather for a given city.
  *
- * @params {string} cityname
+ * @param {string} cityname
  */
 
 function queryCurrentWeather(city) {
@@ -174,7 +174,7 @@ function queryCurrentWeather(city) {
 /**
  * Query the api and print todays weather forecast for a given city.
  *
- * @params {string} cityname
+ * @param {string} cityname
  */
 
 function queryTodaysForecast(city) {
@@ -185,7 +185,7 @@ function queryTodaysForecast(city) {
 /**
  * Query the api and print a five day forecast for a given city.
  *
- * @params {string} cityname
+ * @param {string} cityname
  */
 
 function queryFiveDayForecast(city) {
@@ -197,8 +197,8 @@ function queryFiveDayForecast(city) {
  * Query the api and print forecast for a single city and a specific number of
  * days. (2019-01-20) API Resource now only available for paid accounts.
  *
- * @params {string} cityname
- * @params {number} number of days to forcast
+ * @param {string} cityname
+ * @param {number} number of days to forcast
  */
 
 function queryMultiDayForecast(city, days) {
