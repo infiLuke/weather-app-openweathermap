@@ -31,16 +31,15 @@ module.exports.printMultiDayForecast = printMultiDayForecast;
  */
 
 function formatTimestamp(timestamp) {
-  const months = [
-    'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
-  ];
-  const dateTime = new Date(timestamp * 1000);
+  const months = [ 'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec' ];
+  const clientTimeZoneOffset = new Date().getTimezoneOffset() * 60;
+  const dateTime = new Date((timestamp + clientTimeZoneOffset) * 1000);
   const year = dateTime.getFullYear();
   const month = months[dateTime.getMonth()];
   const date = dateTime.getDate();
-  const hour = dateTime.getHours();
-  const min = dateTime.getMinutes();
-  const formattedDateTime = hour + ':' + min + ` (${date} ${month} ${year})`
+  const hour = dateTime.getHours() < 10 ? "0" + dateTime.getHours() : dateTime.getHours();
+  const min = dateTime.getMinutes() < 10 ? "0" + dateTime.getMinutes() : dateTime.getMinutes();
+  const formattedDateTime = hour + ':' + min + ` (${date} ${month} ${year})`;
 
   return formattedDateTime;
 }
@@ -53,15 +52,17 @@ function formatTimestamp(timestamp) {
  */
 
 function printCurrentWeather(weather) {
-  const weatherInfoTime = formatTimestamp(weather.dt);
-  const sunriseTime = formatTimestamp(weather.sys.sunrise);
-  const sunsetTime = formatTimestamp(weather.sys.sunset);
+  const timezone = weather.timezone / 60 / 60;
+  const timezoneFormat = timezone > 0 ? '+ ' + timezone : '- ' + Math.abs(timezone);
+  const weatherInfoTime = formatTimestamp(weather.dt + weather.timezone);
+  const sunriseTime = formatTimestamp(weather.sys.sunrise + weather.timezone);
+  const sunsetTime = formatTimestamp(weather.sys.sunset + weather.timezone);
   const message = `The temperature in ${weather.name}, ${weather.sys.country} is ${weather.main.temp} degrees celsius with ${weather.weather[0].description}.
   - ${weather.clouds.all}% cloud coverage and ${weather.main.humidity}% humidity
   - a current low of ${weather.main.temp_min} and a high of ${weather.main.temp_max} celsius
   - sunrise: ${sunriseTime}
   - sunset:  ${sunsetTime}
-  - weather data was collected at ${weatherInfoTime}`
+  - weather data was collected at ${weatherInfoTime} - UTC ${timezoneFormat}`;
 
   console.log(message.green);
   console.log(`  -----------------------------------------------------------`.cyan);
@@ -75,7 +76,33 @@ function printCurrentWeather(weather) {
  */
 
 function printTodaysForecast(weather) {
-  console.log(weather);
+  const timezone = weather.city.timezone / 60 / 60;
+  const timezoneFormat = timezone > 0 ? '+ ' + timezone : '- ' + Math.abs(timezone);
+  const sunriseTime = formatTimestamp(weather.city.sunrise + weather.city.timezone);
+  const sunsetTime = formatTimestamp(weather.city.sunset + weather.city.timezone);
+  const name = weather.city.name;
+  const country = weather.city.country;
+  const output = `Todays weather for ${name}, ${country} ${sunriseTime.substr(6)} UTC ${timezoneFormat}:
+  - sunrise: ${sunriseTime}
+  - sunset: ${sunsetTime}
+`.cyan;
+
+  console.log(output);
+
+  for (let i = 0; i < 9; i++) {
+    const datetime = formatTimestamp(weather.list[i].dt + weather.city.timezone);
+    const time = datetime.substr(0, 5);
+    const temp = weather.list[i].main.temp;
+    const tempMin = weather.list[i].main.temp_min;
+    const tempMax = weather.list[i].main.temp_max;
+    const description = weather.list[i].weather[0].description;
+    const humidity = weather.list[i].main.humidity;
+    const clouds = weather.list[i].clouds.all;
+
+    console.log(`  ${time} - ${temp}°C (${tempMin} - ${tempMax}) - ${description} - ${humidity}% humidity - ${clouds}% cloud coverage`.green);
+  }
+
+  console.log(`  -----------------------------------------------------------`.cyan);
 }
 
 /**
@@ -86,7 +113,33 @@ function printTodaysForecast(weather) {
  */
 
 function printFiveDayForecast(weather) {
-  console.log(weather);
+  const timezone = weather.city.timezone / 60 / 60;
+  const timezoneFormat = timezone > 0 ? '+ ' + timezone : '- ' + Math.abs(timezone);
+  const sunriseTime = formatTimestamp(weather.city.sunrise + weather.city.timezone);
+  const sunsetTime = formatTimestamp(weather.city.sunset + weather.city.timezone);
+  const name = weather.city.name;
+  const country = weather.city.country;
+  const output = `Todays weather for ${name}, ${country} ${sunriseTime.substr(6)} UTC ${timezoneFormat}:
+  - sunrise: ${sunriseTime}
+  - sunset: ${sunsetTime}
+`.cyan;
+
+  console.log(output);
+
+  for (let i = 0; i < 40; i++) {
+    const datetime = formatTimestamp(weather.list[i].dt + weather.city.timezone);
+    const time = datetime.substr(0, 5);
+    const temp = weather.list[i].main.temp;
+    const tempMin = weather.list[i].main.temp_min;
+    const tempMax = weather.list[i].main.temp_max;
+    const description = weather.list[i].weather[0].description;
+    const humidity = weather.list[i].main.humidity;
+    const clouds = weather.list[i].clouds.all;
+
+    console.log(`  ${time} - ${temp}°C (${tempMin} - ${tempMax}) - ${description} - ${humidity}% humidity - ${clouds}% cloud coverage`.green);
+  }
+
+  console.log(`  -----------------------------------------------------------`.cyan);
 }
 
 /**
