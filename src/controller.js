@@ -1,6 +1,6 @@
 /*
- * weather-api-client - logic
- * Copyright (c) 2018 Luca J
+ * weather-api-client - controller
+ * Copyright (c) 2019 Luca J
  * Licensed under the MIT license.
  */
 
