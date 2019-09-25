@@ -93,13 +93,11 @@ function printTodaysForecast(weather) {
     const datetime = formatTimestamp(weather.list[i].dt + weather.city.timezone);
     const time = datetime.substr(0, 5);
     const temp = weather.list[i].main.temp;
-    const tempMin = weather.list[i].main.temp_min;
-    const tempMax = weather.list[i].main.temp_max;
     const description = weather.list[i].weather[0].description;
     const humidity = weather.list[i].main.humidity;
     const clouds = weather.list[i].clouds.all;
 
-    console.log(`  ${time} - ${temp}°C (${tempMin} - ${tempMax}) - ${description} - ${humidity}% humidity - ${clouds}% cloud coverage`.green);
+    console.log(`  ${time} - ${temp}°C - ${description} - ${humidity}% humidity - ${clouds}% cloud coverage`.green);
   }
 
   console.log(`  -----------------------------------------------------------`.cyan);
@@ -130,13 +128,11 @@ function printFiveDayForecast(weather) {
     const datetime = formatTimestamp(weather.list[i].dt + weather.city.timezone);
     const time = datetime.substr(0, 5);
     const temp = weather.list[i].main.temp;
-    const tempMin = weather.list[i].main.temp_min;
-    const tempMax = weather.list[i].main.temp_max;
     const description = weather.list[i].weather[0].description;
     const humidity = weather.list[i].main.humidity;
     const clouds = weather.list[i].clouds.all;
 
-    console.log(`  ${time} - ${temp}°C (${tempMin} - ${tempMax}) - ${description} - ${humidity}% humidity - ${clouds}% cloud coverage`.green);
+    console.log(`  ${time} - ${temp}°C - ${description} - ${humidity}% humidity - ${clouds}% cloud coverage`.green);
   }
 
   console.log(`  -----------------------------------------------------------`.cyan);
